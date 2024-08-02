@@ -1,10 +1,24 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 import uuid
-from constants import WORKER_URL
-from models import SubmitRequest
+from src.constants import UI_URL, WORKER_URL
+from src.models import SubmitRequest
 
 app = FastAPI()
+
+origins = [
+    str(UI_URL),
+    str(WORKER_URL),
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
