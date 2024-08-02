@@ -5,9 +5,9 @@ from typing import List
 class Contract(BaseModel):
     name: str
     ast: object
-    source: str
+    raw: str
 
 
-class SubmitRequest(BaseModel):
+class WorkUnit(BaseModel):
     root: Contract
     dependencies: List[Contract]

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import requests
 import uuid
 from src.constants import UI_URL, WORKER_URL
-from src.models import SubmitRequest
+from src.models import WorkUnit
 
 app = FastAPI()
 
@@ -28,20 +28,22 @@ def health():
 
 # POST request to analyze content
 @app.post("/submit")
-def submit(request: SubmitRequest):
+def submit(request: WorkUnit):
     # Generate a unique socket ID
-    socket_id = str(uuid.uuid4())
+    socket = str(uuid.uuid4())
 
-    # Notify the worker server with the analysis request
+    # TODO: Notify the worker server with the analysis request
     request_url = WORKER_URL / "process"
     try:
         response = requests.post(
-            request_url, json={"socket_id": socket_id, "request": request.dict()}
+            request_url, json={"socket": socket, "work": request.dict()}
         )
+
+        print(response.json())
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail="No workers available")
 
-    return {"socket_id": socket_id}
+    return {"socket": socket}
 
 
 if __name__ == "__main__":
