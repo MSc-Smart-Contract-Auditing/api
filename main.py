@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 import requests
 import uuid
+from constants import WORKER_URL
+from models import SubmitRequest
 
 app = FastAPI()
 
@@ -12,20 +14,18 @@ def health():
 
 # POST request to analyze content
 @app.post("/submit")
-def submit(request):
+def submit(request: SubmitRequest):
     # Generate a unique socket ID
     socket_id = str(uuid.uuid4())
 
     # Notify the worker server with the analysis request
-    worker_url = "http://localhost:8001/process"
-    response = requests.post(
-        worker_url, json={"socket_id": socket_id, "request": request.dict()}
-    )
-
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=500, detail="Failed to notify the worker server"
+    request_url = WORKER_URL / "process"
+    try:
+        response = requests.post(
+            request_url, json={"socket_id": socket_id, "request": request.dict()}
         )
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail="No workers available")
 
     return {"socket_id": socket_id}
 
