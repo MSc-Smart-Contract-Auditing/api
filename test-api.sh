@@ -33,14 +33,8 @@ DUMMY_OBJECT='{
   ]
 }'
 
-# DUMMY_OBJECT='{
-#   "main_contract": "dummy main contract content"
-# }'
-
-# Send the POST request using curl
 curl -X POST "$API_URL" \
      -H "Content-Type: application/json" \
      -d "$DUMMY_OBJECT"
 
-# Print a newline for better readability of the output
 echo
