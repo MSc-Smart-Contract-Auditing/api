@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Dict
 
 
 class Contract(BaseModel):
@@ -8,6 +8,17 @@ class Contract(BaseModel):
     raw: str
 
 
+class Function(BaseModel):
+    id: int
+    name: str
+    source: str
+
+
+class FunctionNode(BaseModel):
+    func: Function
+    invocations: List[int]
+
+
 class WorkUnit(BaseModel):
-    root: Contract
-    dependencies: List[Contract]
+    lookup: Dict[int, FunctionNode]
+    mainIds: List[int]
