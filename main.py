@@ -35,11 +35,11 @@ def submit(request: WorkUnit):
     # TODO: Notify the worker server with the analysis request
     request_url = WORKER_URL / "process"
     try:
-        print({"socket": socket, "work": request.dict()})
         response = requests.post(
             request_url, json={"socket": socket, "work": request.dict()}
         )
 
+        print(response.json())
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail="No workers available")
 
